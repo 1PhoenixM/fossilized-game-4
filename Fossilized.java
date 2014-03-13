@@ -13,11 +13,12 @@ public class Fossilized {
     public static boolean stillPlaying = true;      //boolean flag controls game loop
     public static Locale[] locations;               //locations array
     public static Items[] items;                    //global items array
-    public static Items[] inventory = new Items[4]; //player inventory
+    public static Items[] inventory = new Items[7]; //player inventory
     public static int[][]  map;                     //navigation by two-dimensional array
     public static int moves = 0;                    //moves count
     public static int score = 5;                    //score count starts at a new location, so init to 5
     public static double ratio = 0.00;
+    public static String possibleDirs = " north south east west";
     
     public static void main(String[] args) {
         if (DEBUGGING) {
@@ -53,9 +54,12 @@ public class Fossilized {
             getCommand();
             navigate();
             updateDisplay();
+            if(score<0){
+                System.out.println("You've spent more than you have. There're no free lunches in this world, pal. But:");
+                quit();
+            }
         }
-
-        System.out.println("You've won!");
+        System.out.println("Thanks for playing!");
     }
 
 
@@ -81,13 +85,27 @@ public class Fossilized {
         Items item3 = new Items(3);
         item3.setItemName("Aegis Stone");
         item3.setDesc("The Aegis Stone is a powerful artifact. Take it?");
+        
+        Items item4 = new Items(4);
+        item4.setItemName("Star Shard");
+        //Items 4, 5, and 6 lack the .desc property because they're exclusive to the magic shoppe.
+        
+        
+        Items item5 = new Items(5);
+        item5.setItemName("Antimony Regulus");
+        
+        Items item6 = new Items(6);
+        item6.setItemName("Crucible");
+        
 
-        items = new Items[4];
+        items = new Items[7];
         items[0] = item0;
         items[1] = item1;
         items[2] = item2;
         items[3] = item3; 
-        
+        items[4] = item4;
+        items[5] = item5;
+        items[6] = item6;
  
         //locales
         Locale loc0 = new Locale(0);
@@ -135,7 +153,7 @@ public class Fossilized {
         Locale loc8 = new Locale(8);
         loc8.setName(">>Star Plain");
         loc8.setDesc("On this plain, you get an amazing view of the night sky and constellations.");
-        //win or lose? depends on ratio.
+        //win or lose? depends on ratio. add: magic shoppe, fossils
         
         locations = new Locale[9];
         locations[0] = loc0; // "Salt Desert" 
@@ -183,10 +201,20 @@ public class Fossilized {
              ||(currentLocale == 6 && inventory[3]!= items[0])){
         System.out.println(locations[currentLocale].getItem().getDesc());
      }
+     else if (currentLocale == 7){
+        System.out.println("What do you wish to buy?"); 
+        
+        for (int i=4;i<7;i++){
+         if(items[i].getObtained() == false){
+         System.out.println(items[i].getItemName());
+         }
+        }
+        
+     }
     }
 
     private static void getCommand() {
-        System.out.print("[Moves:" + moves + " Score:" + score + " Ratio:" + ratio + "] ");
+        System.out.print("[Moves:" + moves + " Score:" + score + " Ratio:" + ratio + " Possible directions:" + possibleDirs + "] ");
         Scanner inputReader = new Scanner(System.in);
         command = inputReader.nextLine();  
     }
@@ -245,7 +273,32 @@ public class Fossilized {
             System.out.println(" ");
            }
         }
+         
+         //magic shoppe is handled here
+         else if ((currentLocale == 7) && (command.equalsIgnoreCase("buy")  || command.equalsIgnoreCase("b"))) {
+            System.out.println("Buy what?");
+        }
         
+         else if ((currentLocale == 7) && ((command.equalsIgnoreCase("buy " + items[4].getItemName()) || (command.equalsIgnoreCase("b " + items[4].getItemName()))))) {
+            System.out.println("Bought.");
+            inventoryAdder(items[4]);
+            score = score - 5;
+            items[4].setObtained(true);
+        }
+         
+           else if ((currentLocale == 7) && ((command.equalsIgnoreCase("buy " + items[5].getItemName()) || (command.equalsIgnoreCase("b " + items[5].getItemName()))))) {
+            System.out.println("Bought.");
+            inventoryAdder(items[5]);
+            score = score - 7;
+            items[5].setObtained(true);
+        }
+           
+             else if ((currentLocale == 7) && ((command.equalsIgnoreCase("buy " + items[6].getItemName()) || (command.equalsIgnoreCase("b " + items[6].getItemName()))))) {
+            System.out.println("Bought.");
+            inventoryAdder(items[6]);
+            score = score - 9;
+            items[6].setObtained(true);
+        }
          else{
            System.out.println("You have typed an illegal command. Type h for a list of commands.");  
              
@@ -263,6 +316,19 @@ public class Fossilized {
                 locations[currentLocale].setHasVisited(true);
                }
                ratio = score / moves;
+               possibleDirs = "";
+               if(map[currentLocale][0] != -1){
+               possibleDirs = possibleDirs + " north ";
+               }
+               if(map[currentLocale][1] != -1){
+               possibleDirs = possibleDirs + " south ";
+               }
+               if(map[currentLocale][2] != -1){
+               possibleDirs = possibleDirs + " east ";
+               }
+               if(map[currentLocale][3] != -1){
+               possibleDirs = possibleDirs + " west ";
+               }
                if(currentLocale == 8){
                   quit(); 
                }   
@@ -279,6 +345,7 @@ public class Fossilized {
         System.out.println("   w/west");
         System.out.println("   h/help");
         System.out.println("   t/take (to take items where prompted)");
+        System.out.println("   b/buy (buying items in the Magic Shoppe only)");
         System.out.println("   m/map (to use the map once you have obtained it)");
         System.out.println("   q/quit");     
     }
@@ -293,6 +360,8 @@ public class Fossilized {
         for (int i=0;i<inventory.length;i++){
            if (inventory[i] == null){
                inventory[i] = newItem;
+               newItem.setObtained(true);
+               return;
            }
          }  
         

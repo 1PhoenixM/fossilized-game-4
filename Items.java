@@ -27,11 +27,17 @@ public class Items {
         this.desc = value;
     }
 
+      public boolean getObtained() {
+        return this.obtained;
+    }
+    public void setObtained(boolean value) {
+        this.obtained = value;
+    }
 
 
     //method toString
     public String toString() {
-        return "[Item object: id=" + this.id + " name="+ this.itemName + " desc=" + this.desc + "]";
+        return "[Item object: id=" + this.id + " name="+ this.itemName + " desc=" + this.desc + " obtained=" + this.obtained + "]";
     }
 
 
@@ -39,6 +45,6 @@ public class Items {
     private int     id;
     private String  itemName;
     private String  desc;
-
+    private boolean obtained = false;
     
 }
