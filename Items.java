@@ -33,11 +33,17 @@ public class Items {
     public void setObtained(boolean value) {
         this.obtained = value;
     }
+     public int getCost() {
+        return this.cost;
+    }
+    public void setCost(int value) {
+        this.cost = value;
+    }
 
 
     //method toString
     public String toString() {
-        return "[Item object: id=" + this.id + " name="+ this.itemName + " desc=" + this.desc + " obtained=" + this.obtained + "]";
+        return "[Item object: id=" + this.id + " name="+ this.itemName + " desc=" + this.desc + " obtained=" + this.obtained + " cost=" + this.cost + "]";
     }
 
 
@@ -46,5 +52,6 @@ public class Items {
     private String  itemName;
     private String  desc;
     private boolean obtained = false;
+    private int cost;
     
 }
