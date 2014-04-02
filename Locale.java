@@ -35,12 +35,34 @@ public class Locale {
     }
     
     public Items getItem() {
-        return item;
+        return this.item;
     }
     public void setItem(Items item) {
         this.item = item;
     }
 
+    public int getNorth(){
+        return this.north;
+    }
+    
+    public int getSouth(){
+        return this.south;
+    }
+    
+    public int getEast(){
+        return this.east;
+    }
+    
+    public int getWest(){
+         return this.west;
+    }
+    
+    public void setDirs(int north, int south, int east, int west){
+        this.north = north;
+        this.south = south;
+        this.east = east;
+        this.west = west;
+    }
     //method toString
     @Override
     public String toString() {
