@@ -53,4 +53,8 @@ public class Locale {
     private String  desc;
     private Items   item;
     private boolean hasVisited = false;
+    private int north; //as in, the location to the north
+    private int south;
+    private int east;
+    private int west;
 }

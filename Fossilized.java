@@ -19,7 +19,7 @@ public class Fossilized {
     public static int moves = 0;                    //moves count
     public static int score = 5;                    //score count starts at a new location, so init to 5
     public static double ratio = 0.00;              //ratio of moves to score
-    public static String possibleDirs = " north south east west"; //possible directions from the current location
+    public static String possibleDirs = " north south"; //possible directions from the current location
     public static boolean inventoryHasAtLeastOne = false;       //flag to check if inventory is empty
     
     public static void main(String[] args) {
