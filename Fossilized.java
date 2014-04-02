@@ -196,10 +196,10 @@ public class Fossilized {
     private static void updateDisplay() {
         System.out.println(locations[currentLocale].getName());
         System.out.println(locations[currentLocale].getDesc());
-     if ((currentLocale == 0 && inventory[0] != items[2])
-             ||(currentLocale == 3 && inventory[1] != items[1])
-             ||(currentLocale == 4 && inventory[2] != items[3])
-             ||(currentLocale == 6 && inventory[3]!= items[0])){
+     if ((currentLocale == 0 && items[2].getObtained() == false)
+             ||(currentLocale == 3 && items[1].getObtained() == false)
+             ||(currentLocale == 4 &&  items[3].getObtained() == false)
+             ||(currentLocale == 6 && items[0].getObtained() == false)){
         System.out.println(locations[currentLocale].getItem().getDesc());
      }
      else if (currentLocale == 7){
@@ -240,7 +240,6 @@ public class Fossilized {
             if (currentLocale == 0){
             inventoryAdder(items[2]);
             System.out.println("Use the 'map' or 'm' command to view the map.");
-            items[2].setObtained(true);
             }
             else if(currentLocale == 3){
             inventoryAdder(items[1]);
@@ -253,6 +252,9 @@ public class Fossilized {
             else if(currentLocale == 6){
             inventoryAdder(items[0]);
             System.out.println("Water taken.");
+            }
+            else{
+            System.out.println("There's nothing to take.");
             }
         }
         else if ( command.equalsIgnoreCase("inventory")  || command.equalsIgnoreCase("i")) {
