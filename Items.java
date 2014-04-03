@@ -39,6 +39,13 @@ public class Items {
     public void setCost(int value) {
         this.cost = value;
     }
+    
+    public Items getNext() {
+        return next;
+    }
+    public void setNext(Items next) {
+        this.next = next;
+    }
 
 
     //method toString
@@ -53,5 +60,5 @@ public class Items {
     private String  desc;
     private boolean obtained = false;
     private int cost;
-    
+    private Items next = null;
 }

@@ -178,6 +178,16 @@ public class Fossilized {
         System.out.println("Welcome to Fossilized 2.0. For help type 'help'");
         
         //map
+        loc0.setDirs(2, 1, -1, -1);
+        loc1.setDirs(0, -1, 6, -1);
+        loc2.setDirs(-1, 0, 3, 5);
+        loc3.setDirs(-1, 4, -1, 2);
+        loc4.setDirs(3, -1, -1, -1);
+        loc5.setDirs(-1, -1, 2, -1);
+        loc6.setDirs(-1, -1, 7, 1);
+        loc7.setDirs(8, -1, -1, 6);
+        loc8.setDirs(-1, 7, -1, -1);
+        
         map = new int[][] {
                                  /* N   S   E   W */
                                  /* 0   1   2   3 */
@@ -224,13 +234,13 @@ public class Fossilized {
         int dir = INVALID;  
 
         if (command.equalsIgnoreCase("north") || command.equalsIgnoreCase("n") ) {
-            dir = 0;
+            dir = locations[currentLocale].getNorth();
         } else if ( command.equalsIgnoreCase("south") || command.equalsIgnoreCase("s") ) {
-            dir = 1;
+            dir = locations[currentLocale].getSouth();
         } else if ( command.equalsIgnoreCase("east")  || command.equalsIgnoreCase("e") ) {
-            dir = 2;
+            dir = locations[currentLocale].getEast();
         } else if ( command.equalsIgnoreCase("west")  || command.equalsIgnoreCase("w") ) {
-            dir = 3;
+            dir = locations[currentLocale].getWest();
         } else if ( command.equalsIgnoreCase("quit")  || command.equalsIgnoreCase("q")) {
             quit();
         } else if ( command.equalsIgnoreCase("help")  || command.equalsIgnoreCase("h")) {
@@ -338,8 +348,8 @@ public class Fossilized {
            System.out.println("You have typed an illegal command. Type 'h' or 'help' for a list of commands.");  
          };
 
-        if (dir > -1) {   
-            int newLocation = map[currentLocale][dir];
+          
+            int newLocation = dir;
             if (newLocation == INVALID) {
                 System.out.println("You can't go that way.");
             } else {
@@ -351,23 +361,23 @@ public class Fossilized {
                }
                ratio = score / moves;
                possibleDirs = "";
-               if(map[currentLocale][0] != -1){
+               if(locations[currentLocale].getNorth() != -1){
                possibleDirs = possibleDirs + " north ";
                }
-               if(map[currentLocale][1] != -1){
+               if(locations[currentLocale].getSouth() != -1){
                possibleDirs = possibleDirs + " south ";
                }
-               if(map[currentLocale][2] != -1){
+               if(locations[currentLocale].getEast() != -1){
                possibleDirs = possibleDirs + " east ";
                }
-               if(map[currentLocale][3] != -1){
+               if(locations[currentLocale].getWest() != -1){
                possibleDirs = possibleDirs + " west ";
                }
                if(currentLocale == 8){
                   quit(); 
                }   
              }
-          }
+          
        }
    
     private static void help() {
