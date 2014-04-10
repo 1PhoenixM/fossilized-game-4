@@ -1,3 +1,4 @@
+package fossilized;
 public class ItemList {
     
     public ItemList() {

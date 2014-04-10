@@ -4,14 +4,11 @@ public class Items {
 
     //public
     //constructor
-    public Items(int id) {
-        this.id = id;
+    public Items() {
     }
 
     //getters and setters
-    public int getId() {
-        return this.id;
-    }
+
 
     public String getItemName() {
         return this.itemName;
@@ -33,10 +30,10 @@ public class Items {
     public void setObtained(boolean value) {
         this.obtained = value;
     }
-     public int getCost() {
+     public double getCost() {
         return this.cost;
     }
-    public void setCost(int value) {
+    public void setCost(double value) {
         this.cost = value;
     }
     
@@ -59,6 +56,6 @@ public class Items {
     private String  itemName;
     private String  desc;
     private boolean obtained = false;
-    private int cost;
+    private double cost;
     private Items next = null;
 }

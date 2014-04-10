@@ -1,7 +1,8 @@
-//Melissa Iori - Fossilized 2.0
+//Melissa Iori - Fossilized 3.0
 
 package fossilized;
 
+import java.io.*;
 import java.util.Scanner;
 
 public class Fossilized {
@@ -14,13 +15,14 @@ public class Fossilized {
     public static Locale[] locations;               //locations array
     public static Caves[] caveLocations;
     public static Items[] items;                    //global items array
-    public static Items[] inventory = new Items[8]; //player inventory
+    public static Items[] inventory = new Items[20]; //player inventory
     public static int[][]  map;                     //navigation by two-dimensional array
     public static int moves = 0;                    //moves count
-    public static int score = 5;                    //score count starts at a new location, so init to 5
+    public static double score = 5;                    //score count starts at a new location, so init to 5
     public static double ratio = 0.00;              //ratio of moves to score
     public static String possibleDirs = " north south"; //possible directions from the current location
     public static boolean inventoryHasAtLeastOne = false;       //flag to check if inventory is empty
+    public static boolean shoppeListed = false;
     
     public static void main(String[] args) {
         //start loc
@@ -64,36 +66,36 @@ public class Fossilized {
         
         //items
                 
-        Items item0 = new Items(0);
+        Items item0 = new Items();
         item0.setItemName("Water");
         item0.setDesc("--Will you take some water?");
         
-        Items item1 = new Items(1);
+        Items item1 = new Items();
         item1.setItemName("Shovel");
         item1.setDesc("--There's a shovel here. Take it?");
         
-        Items item2 = new Items(2);
+        Items item2 = new Items();
         item2.setItemName("Map");
         item2.setDesc("--There is a map here. Take it?");
         
-        Items item3 = new Items(3);
+        Items item3 = new Items();
         item3.setItemName("Aegis Stone");
         item3.setDesc("--The Aegis Stone is a powerful artifact. Take it?");
         
-        Items item4 = new Items(4);
+        Items item4 = new Items();
         item4.setItemName("Star Shard");
         //Items 4, 5, and 6 lack the .desc property because they're exclusive to the Magic Shoppe.
         item4.setCost(5);
         
-        Items item5 = new Items(5);
+        Items item5 = new Items();
         item5.setItemName("Antimony Regulus");
         item5.setCost(7);
         
-        Items item6 = new Items(6);
+        Items item6 = new Items();
         item6.setItemName("Crucible");
         item6.setCost(9);
         
-        Items item7 = new Items(7);
+        Items item7 = new Items();
         item7.setItemName("Homunculus Flask");
         item7.setCost(40);
 
@@ -148,7 +150,7 @@ public class Fossilized {
         
         Locale loc7 = new Locale(7);
         loc7.setName(">>Magick Shoppe");
-        loc7.setDesc("After a long hike, you come across a remote Magick Shoppe known to few and praised by many.");
+        loc7.setDesc("After a long hike, you come across a remote Magick Shoppe of decent quality.");
         
         Locale loc8 = new Locale(8);
         loc8.setName(">>Star Plain");
@@ -175,7 +177,7 @@ public class Fossilized {
         //the purpose of this separate array is to manipulate methods exclusive to the Cave subclass
         //because locations[] is of type Locale and can't call those methods
         
-        System.out.println("Welcome to Fossilized 2.0. For help type 'help'");
+        System.out.println("Welcome to Fossilized 3.0. For help type 'help'");
         
         //map
         loc0.setDirs(2, 1, -1, -1);
@@ -187,20 +189,7 @@ public class Fossilized {
         loc6.setDirs(-1, -1, 7, 1);
         loc7.setDirs(8, -1, -1, 6);
         loc8.setDirs(-1, 7, -1, -1);
-        
-        map = new int[][] {
-                                 /* N   S   E   W */
-                                 /* 0   1   2   3 */
-         /* map[0] for loc 0 */  {  2,  1, -1, -1 },
-         /* map[1] for loc 1 */  {  0, -1, 6, -1 },
-         /* map[2] for loc 2 */  { -1,  0, 3, 5 },
-                /*3*/            { -1,  4, -1,  2 },
-                /*4*/            { 3,  -1, -1, -1 },
-                /*5*/            { -1,  -1,  2, -1 },
-                /*6*/            { -1,  -1,  7,  1 },
-                /*7*/            {  8,  -1,  -1, 6},   
-                /*8*/            { -1,   7,  -1, -1 },
-        };
+       
     }
 
     private static void updateDisplay() {
@@ -219,7 +208,23 @@ public class Fossilized {
          if(items[i].getObtained() == false){
          System.out.println(items[i].getItemName() + "," + items[i].getCost() + " pts.");
          }
-       } 
+       }
+          // Make the list manager.
+        ItemList lm1 = new ItemList();
+       
+        final String fileName = "magic.txt";
+
+        readMagicItemsFromFileToList(fileName, lm1);
+        // Display the list of items.
+        //System.out.println(lm1.toString());
+
+        // Declare an array for the items.
+        Items[] shoppeItems = new Items[666];
+        readMagicItemsFromFileToArray(fileName, shoppeItems);
+        // Display the array of items.
+        System.out.println("For sale:");
+        System.out.println("Use the shop command for a full list of stocked items.");
+         
      }
     }
 
@@ -234,13 +239,33 @@ public class Fossilized {
         int dir = INVALID;  
 
         if (command.equalsIgnoreCase("north") || command.equalsIgnoreCase("n") ) {
+            if(locations[currentLocale].getNorth() != INVALID){
             dir = locations[currentLocale].getNorth();
+            }
+            else{
+            System.out.println("You can't go north here.");   
+            }
         } else if ( command.equalsIgnoreCase("south") || command.equalsIgnoreCase("s") ) {
+            if(locations[currentLocale].getSouth() != INVALID){
             dir = locations[currentLocale].getSouth();
+            }
+            else{
+            System.out.println("You can't go south here.");   
+            }
         } else if ( command.equalsIgnoreCase("east")  || command.equalsIgnoreCase("e") ) {
+            if(locations[currentLocale].getEast() != INVALID){
             dir = locations[currentLocale].getEast();
+            }
+            else{
+            System.out.println("You can't go east here.");   
+            }
         } else if ( command.equalsIgnoreCase("west")  || command.equalsIgnoreCase("w") ) {
+            if(locations[currentLocale].getWest() != INVALID){
             dir = locations[currentLocale].getWest();
+            }
+            else{
+            System.out.println("You can't go west here.");   
+            }
         } else if ( command.equalsIgnoreCase("quit")  || command.equalsIgnoreCase("q")) {
             quit();
         } else if ( command.equalsIgnoreCase("help")  || command.equalsIgnoreCase("h")) {
@@ -298,6 +323,32 @@ public class Fossilized {
         else if (currentLocale == 7 && (command.equalsIgnoreCase("buy")  || command.equalsIgnoreCase("b"))) {
             System.out.println("Buy what?");
         }
+        else if (currentLocale == 7 && (command.equalsIgnoreCase("shop")  || command.equalsIgnoreCase("s"))) {
+            ItemList lm1 = new ItemList();
+            final String fileName = "magic.txt";
+            readMagicItemsFromFileToList(fileName, lm1);
+            Items[] shoppeItems = new Items[666];
+            readMagicItemsFromFileToArray(fileName, shoppeItems);
+            System.out.println("For sale:");
+            for (int i = 0; i < shoppeItems.length; i++) {
+            if (shoppeItems[i] != null) {
+                System.out.println(shoppeItems[i].toString());
+                }
+            }
+        // Ask player for an item.
+        Scanner inputReader = new Scanner(System.in);
+        System.out.print("Enter the item\'s name to purchase it. ");
+        String targetItem = new String();
+        targetItem = inputReader.nextLine();
+        System.out.println();
+
+        Items li = new Items();
+        li = sequentialSearch(lm1, targetItem);
+        if (li != null) {
+            System.out.println(li.toString());
+        }
+        
+        }
          else if (currentLocale == 7 && ((command.equalsIgnoreCase("buy " + items[4].getItemName()) || (command.equalsIgnoreCase("b " + items[4].getItemName()))))) {
             System.out.println("Bought.");
             inventoryAdder(items[4]);
@@ -349,10 +400,8 @@ public class Fossilized {
          };
 
           
-            int newLocation = dir;
-            if (newLocation == INVALID) {
-                System.out.println("You can't go that way.");
-            } else {
+                int newLocation = dir;
+                if (newLocation != INVALID){
                 currentLocale = newLocation;
                 moves++;
                if(locations[currentLocale].getHasVisited() == false){ 
@@ -376,8 +425,8 @@ public class Fossilized {
                if(currentLocale == 8){
                   quit(); 
                }   
-             }
-          
+             
+            }
        }
    
     private static void help() {
@@ -389,7 +438,8 @@ public class Fossilized {
         System.out.println("   h/help");
         System.out.println("   f/fossil (check for fossils)");
         System.out.println("   t/take (to take items where prompted)");
-        System.out.println("   b/buy (buying items in the Magic Shoppe only)");
+        System.out.println("   b/buy (buying standard items in the Magic Shoppe only)");
+        System.out.println("   s/shop (for buying special items in the Magic Shoppe only)");
         System.out.println("   m/map (to use the map once you have obtained it)");
         System.out.println("   q/quit");     
     }
@@ -400,13 +450,100 @@ public class Fossilized {
     
     private static void inventoryAdder(Items item){
         //push to array
-        Items newItem = item;
+        //Items newItem = item;
+        inventoryHasAtLeastOne = true;
         for (int i=0;i<inventory.length;i++){
            if (inventory[i] == null){
-               inventory[i] = newItem;
-               newItem.setObtained(true);
+               inventory[i] = item;
+               item.setObtained(true);
                return;
            }
          }   
     }
+      private static Items sequentialSearch(ItemList lm,
+                                             String target) {
+        Items retVal = null;
+        System.out.println("Searching for " + target + ".");
+        int counter = 0;
+        //Items currentItem = new Items();
+        Items currentItem = lm.getHead();
+        boolean isFound = false;
+        while ( (!isFound) && (currentItem != null) ) {
+            counter = counter +1;
+            if (currentItem.getItemName().equalsIgnoreCase(target)) {
+                // We found it!
+                isFound = true;
+                retVal = currentItem;
+            } else {
+                // Keep looking.
+                currentItem = currentItem.getNext();
+            }
+        }
+        if (isFound) {
+            System.out.println("Found " + target + " after " + counter + " comparisons. Bought.");
+            inventoryAdder(currentItem);
+            score = score - currentItem.getCost();
+            return currentItem;
+        } else {
+            System.out.println("Could not find " + target + " in " + counter + " comparisons. Sorry!");
+        }
+
+        return retVal;
+    }
+
+
+    private static void readMagicItemsFromFileToList(String fileName,
+                                                     ItemList lm) {
+        File myFile = new File(fileName);
+        try {
+            Scanner input = new Scanner(myFile);
+            while (input.hasNext()) {
+                // Read a line from the file.
+                String itemName = input.nextLine();
+
+                // Construct a new list item and set its attributes.
+                Items fileItem = new Items();
+                fileItem.setItemName(itemName);
+                fileItem.setCost(Math.random() * 10);
+                fileItem.setNext(null); // Still redundant. Still safe.
+
+                // Add the newly constructed item to the list.
+                lm.add(fileItem);
+            }
+            // Close the file.
+            input.close();
+        } catch (FileNotFoundException ex) {
+            System.out.println("File not found. " + ex.toString());
+        }
+
+    }
+
+    private static void readMagicItemsFromFileToArray(String fileName,
+                                                      Items[] items) {
+        File myFile = new File(fileName);
+        try {
+            int itemCount = 0;
+            Scanner input = new Scanner(myFile);
+
+            while (input.hasNext() && itemCount < items.length) {
+                // Read a line from the file.
+                String itemName = input.nextLine();
+
+                // Construct a new list item and set its attributes.
+                Items fileItem = new Items();
+                fileItem.setItemName(itemName);
+                fileItem.setCost(Math.random() * 10);
+                fileItem.setNext(null); // Still redundant. Still safe.
+
+                // Add the newly constructed item to the array.
+                items[itemCount] = fileItem;
+                itemCount = itemCount + 1;
+            }
+            // Close the file.
+            input.close();
+        } catch (FileNotFoundException ex) {
+            System.out.println("File not found. " + ex.toString());
+        }
+    }
+
 }
