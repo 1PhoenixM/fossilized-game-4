@@ -215,13 +215,8 @@ public class Fossilized {
         final String fileName = "magic.txt";
 
         readMagicItemsFromFileToList(fileName, lm1);
-        // Display the list of items.
-        //System.out.println(lm1.toString());
-
-        // Declare an array for the items.
-        Items[] shoppeItems = new Items[666];
-        readMagicItemsFromFileToArray(fileName, shoppeItems);
-        // Display the array of items.
+        
+        // Display under shop command.
         System.out.println("For sale:");
         System.out.println("Use the shop command for a full list of stocked items.");
          
@@ -332,8 +327,13 @@ public class Fossilized {
             System.out.println("For sale:");
             for (int i = 0; i < shoppeItems.length; i++) {
             if (shoppeItems[i] != null) {
+                if(DEBUGGING){
                 System.out.println(shoppeItems[i].toString());
                 }
+                else{
+                System.out.println(shoppeItems[i].getItemName() + ", Cost:" + shoppeItems[i].getCost());       
+                }
+              }
             }
         // Ask player for an item.
         Scanner inputReader = new Scanner(System.in);
@@ -341,12 +341,12 @@ public class Fossilized {
         String targetItem = new String();
         targetItem = inputReader.nextLine();
         System.out.println();
-
-        Items li = new Items();
-        li = sequentialSearch(lm1, targetItem);
-        if (li != null) {
-            System.out.println(li.toString());
+        if(targetItem.equalsIgnoreCase("quit") || targetItem.equalsIgnoreCase("q")){
+            updateDisplay();    
         }
+        
+        Items li = new Items();
+        li = sequentialSearch(lm1, targetItem, shoppeItems);
         
         }
          else if (currentLocale == 7 && ((command.equalsIgnoreCase("buy " + items[4].getItemName()) || (command.equalsIgnoreCase("b " + items[4].getItemName()))))) {
@@ -461,7 +461,7 @@ public class Fossilized {
          }   
     }
       private static Items sequentialSearch(ItemList lm,
-                                             String target) {
+                                             String target, Items[] items) {  
         Items retVal = null;
         System.out.println("Searching for " + target + ".");
         int counter = 0;
@@ -480,10 +480,10 @@ public class Fossilized {
             }
         }
         if (isFound) {
-            System.out.println("Found " + target + " after " + counter + " comparisons. Bought.");
+            System.out.println("Found " + target + " after " + counter + " comparisons. Bought for " + items[counter].getCost() + " of your score.");
             inventoryAdder(currentItem);
-            score = score - currentItem.getCost();
-            return currentItem;
+            score = score - items[counter].getCost();
+            System.out.println();
         } else {
             System.out.println("Could not find " + target + " in " + counter + " comparisons. Sorry!");
         }
@@ -504,7 +504,7 @@ public class Fossilized {
                 // Construct a new list item and set its attributes.
                 Items fileItem = new Items();
                 fileItem.setItemName(itemName);
-                fileItem.setCost(Math.random() * 10);
+                //fileItem.setCost(Math.random() * 10);
                 fileItem.setNext(null); // Still redundant. Still safe.
 
                 // Add the newly constructed item to the list.
