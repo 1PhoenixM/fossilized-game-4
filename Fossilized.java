@@ -1,4 +1,4 @@
-//Melissa Iori - Fossilized 3.0
+//Melissa Iori - Fossilized 4.0
 
 package fossilized;
 
@@ -324,6 +324,7 @@ public class Fossilized {
             readMagicItemsFromFileToList(fileName, lm1);
             Items[] shoppeItems = new Items[666];
             readMagicItemsFromFileToArray(fileName, shoppeItems);
+            selectionSort(shoppeItems);
             System.out.println("For sale:");
             for (int i = 0; i < shoppeItems.length; i++) {
             if (shoppeItems[i] != null) {
@@ -335,7 +336,7 @@ public class Fossilized {
                 }
               }
             }
-        // Ask player for an item.
+        // Ask player for an item.    
         Scanner inputReader = new Scanner(System.in);
         System.out.print("Enter the item\'s name to purchase it. ");
         String targetItem = new String();
@@ -346,8 +347,8 @@ public class Fossilized {
         }
         
         Items li = new Items();
-        li = sequentialSearch(lm1, targetItem, shoppeItems);
-        
+        //li = sequentialSearch(lm1, targetItem, shoppeItems);
+        li = binarySearchArray(shoppeItems, targetItem);
         }
          else if (currentLocale == 7 && ((command.equalsIgnoreCase("buy " + items[4].getItemName()) || (command.equalsIgnoreCase("b " + items[4].getItemName()))))) {
             System.out.println("Bought.");
@@ -545,5 +546,60 @@ public class Fossilized {
             System.out.println("File not found. " + ex.toString());
         }
     }
+    
+        private static void selectionSort(Items[] items) {
+        for (int pass = 0; pass < items.length-1; pass++) {
+            // System.out.println(pass + "-" + items[pass]);
+            int indexOfTarget = pass;
+            int indexOfSmallest = indexOfTarget;
+            for (int j = indexOfTarget+1; j < items.length; j++) {
+                if (items[j].getItemName().compareToIgnoreCase(items[indexOfSmallest].getItemName()) < 0) {
+                    indexOfSmallest = j;
+                }
+            }
+            Items temp = items[indexOfTarget];
+            items[indexOfTarget] = items[indexOfSmallest];
+            items[indexOfSmallest] = temp;
+        }
+    }
+        
+    private static Items binarySearchArray(Items[] items,
+                                              String target) {
+        Items retVal = null;
+        System.out.println("Binary Searching for " + target + ".");
+        Items currentItem = new Items();
+        boolean isFound = false;
+        int counter = 0;
+        int low  = 0;
+        int high = items.length-1; // because 0-based arrays
+        while ( (!isFound) && (low <= high)) {
+            int mid = Math.round((high + low) / 2);
+            currentItem = items[mid];
+            if (currentItem.getItemName().equalsIgnoreCase(target)) {
+                // We found it!
+                isFound = true;
+                retVal = currentItem;
+            } else {
+                // Keep looking.
+                counter++;
+                if (currentItem.getItemName().compareToIgnoreCase(target) > 0) {
+                    // target is higher in the list than the currentItem (at mid)
+                    high = mid - 1;
+                } else {
+                    // target is lower in the list than the currentItem (at mid)
+                    low = mid + 1;
+                }
+            }
+        }
+        if (isFound) {
+            System.out.println("Found " + target + " after " + counter + " comparisons. Bought for " + items[counter].getCost() + " of your score.");
+            inventoryAdder(currentItem);
+            score = score - items[counter].getCost();
+            System.out.println();
+        } else {
+            System.out.println("Could not find " + target + " in " + counter + " comparisons. Sorry!");
+        }
+        return retVal;
+    }    
 
 }
