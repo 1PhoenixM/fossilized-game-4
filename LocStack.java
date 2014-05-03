@@ -9,26 +9,26 @@ public class LocStack {
         init();
     }
 
-    public void push(int item) {
+    public void push(Locale loc) throws Exception {
         // Check for stack overflow.
         if (topPtr > 0) {
             topPtr = topPtr - 1;
-            arr[topPtr] = item;
+            arr[topPtr] = loc;
         } else {
-            // TODO: Throw an overflow exception.
+             Exception overflow = new Exception("Stack Overflow");
+            throw overflow;
         }
     }
-
-    public int pop() {
-        int retVal = 0;
+    
+    public Locale pop() throws Exception {
+        Locale retVal = null;
         // Check for stack underflow.
         if (topPtr < CAPACITY) {
             retVal = arr[topPtr];
             topPtr = topPtr + 1;
         } else {
-            // In case of underflow, return -1.
-            // TODO: Throw an underflow exception.
-            retVal = -1;
+            Exception underflow = new Exception("Stack Underflow");
+            throw underflow;
         }
         return retVal;
     }
@@ -41,21 +41,16 @@ public class LocStack {
         return retVal;
     }
 
-    public boolean isEmptyMo() {
-        return (topPtr == CAPACITY);
-    }
-
-
     //
     // Private
     //
-    private final int CAPACITY = 5;
-    private int[] arr = new int[CAPACITY];
+    private final int CAPACITY = 1000;
+    private Locale[] arr = new Locale[CAPACITY];
     private int topPtr = 0;
 
     private void init() {
        for (int i = 0; i < CAPACITY; i++) {
-           arr[i] = 0;
+           arr[i] = null;
        }
        topPtr = CAPACITY;
     }

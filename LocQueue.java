@@ -9,19 +9,19 @@ public class LocQueue {
     //
     // Public
     //
-    public void enqueue(int item) throws Exception {
+    public void enqueue(Locale loc) throws Exception {
         // Check for overflow.
         if (backPtr < CAPACITY-1) {
             backPtr = backPtr + 1;
-            arr[backPtr] = item;
+            arr[backPtr] = loc;
         } else {
             Exception overflow = new Exception("Queue Overflow");
             throw overflow;
         }
     }
 
-    public int dequeue() throws Exception {
-        int retVal = 0;
+    public Locale dequeue() throws Exception {
+        Locale retVal = null;
         // Check for underflow.
 
         if (! this.isEmpty()) {
@@ -31,7 +31,7 @@ public class LocQueue {
                 arr[i] = arr[i+1];
             }
             // Reinitialize the last element
-            arr[backPtr] = 0;
+            arr[backPtr] = null;
             // shift the back pointer towards the front.
             backPtr--;
         } else {
@@ -59,12 +59,12 @@ public class LocQueue {
     //
     private void init() {
         for (int i = 0; i < CAPACITY; i++) {
-            arr[i] = 0;
+            arr[i] = null;
         }
     }
 
-    private final int CAPACITY = 5;
-    private int[] arr = new int[CAPACITY];
+    private final int CAPACITY = 1000;
+    private Locale[] arr = new Locale[CAPACITY];
     private int frontPtr = 0;
     private int backPtr  = -1;
 }

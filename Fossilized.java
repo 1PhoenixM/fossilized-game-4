@@ -23,6 +23,9 @@ public class Fossilized {
     public static String possibleDirs = " north south"; //possible directions from the current location
     public static boolean inventoryHasAtLeastOne = false;       //flag to check if inventory is empty
     public static boolean shoppeListed = false;
+    public static LocStack BackPath = new LocStack();
+    public static LocQueue FrontPath = new LocQueue();
+    public static Locale visitedLoc = null;
     
     public static void main(String[] args) {
         //start loc
@@ -221,6 +224,9 @@ public class Fossilized {
         System.out.println("Use the shop command for a full list of stocked items.");
          
      }
+     else if(currentLocale == 8){
+                  System.out.println("Type back or forth to see your adventure, or quit to end the game.");
+               } 
     }
 
     private static void getCommand() {
@@ -394,7 +400,29 @@ public class Fossilized {
              else{
              System.out.println("There's no fossil here.");
              }    
-        }    
+        }
+         //todo: handle first location, salt desert, when pushing and enqueuing
+         else if (command.equalsIgnoreCase("back") && (currentLocale == 8)){
+                    try{while (!BackPath.isEmpty()){
+                    visitedLoc = BackPath.pop();
+                    System.out.println(visitedLoc.getName());    
+                    }
+                   } catch (Exception ex) {
+            System.out.println("Caught exception: " + ex.getMessage());
+                    } 
+                    System.out.println();
+                  }
+          else if(command.equalsIgnoreCase("forth") && (currentLocale == 8)){
+                   try{while (!FrontPath.isEmpty()){
+                    visitedLoc = FrontPath.dequeue();
+                    System.out.println(visitedLoc.getName());    
+                    }
+                   }  catch (Exception ex) {
+            System.out.println("Caught exception: " + ex.getMessage());
+                    }
+                    System.out.println();
+                  } 
+         
         
         else{
            System.out.println("You have typed an illegal command. Type 'h' or 'help' for a list of commands.");  
@@ -405,6 +433,10 @@ public class Fossilized {
                 if (newLocation != INVALID){
                 currentLocale = newLocation;
                 moves++;
+                try{BackPath.push(locations[currentLocale]);}
+                catch(Exception ex){System.out.println("Caught exception: " + ex.getMessage());}
+                try{FrontPath.enqueue(locations[currentLocale]);}
+                catch(Exception ex){System.out.println("Caught exception: " + ex.getMessage());}
                if(locations[currentLocale].getHasVisited() == false){ 
                 score = score + 5;   
                 locations[currentLocale].setHasVisited(true);
@@ -423,10 +455,7 @@ public class Fossilized {
                if(locations[currentLocale].getWest() != -1){
                possibleDirs = possibleDirs + " west ";
                }
-               if(currentLocale == 8){
-                  quit(); 
-               }   
-             
+               
             }
        }
    
