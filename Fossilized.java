@@ -46,6 +46,13 @@ public class Fossilized {
 
         
         init();
+        
+        //this block only adds the first location, other locations are added through navigate.
+        try{BackPath.push(locations[currentLocale]);}
+        catch(Exception ex){System.out.println("Caught exception: " + ex.getMessage());}
+        try{FrontPath.enqueue(locations[currentLocale]);}
+        catch(Exception ex){System.out.println("Caught exception: " + ex.getMessage());}
+        
         updateDisplay();
 
         //loop
@@ -401,7 +408,7 @@ public class Fossilized {
              System.out.println("There's no fossil here.");
              }    
         }
-         //todo: handle first location, salt desert, when pushing and enqueuing
+         //todo: fix going back. can't go back once reached this point.
          else if (command.equalsIgnoreCase("back") && (currentLocale == 8)){
                     try{while (!BackPath.isEmpty()){
                     visitedLoc = BackPath.pop();
@@ -424,6 +431,7 @@ public class Fossilized {
                   } 
          
         
+         
         else{
            System.out.println("You have typed an illegal command. Type 'h' or 'help' for a list of commands.");  
          };
@@ -475,7 +483,7 @@ public class Fossilized {
     }
 
     private static void quit() {
-        stillPlaying = false;
+        stillPlaying = false; 
     }
     
     private static void inventoryAdder(Items item){
