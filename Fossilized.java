@@ -231,8 +231,42 @@ public class Fossilized {
         System.out.println("Use the shop command for a full list of stocked items.");
          
      }
+     //illegal command string... game loop... can't go back.
+     //also show final moves, score, ratio etc.
      else if(currentLocale == 8){
+                  if(items[7].getObtained()){
                   System.out.println("Type back or forth to see your adventure, or quit to end the game.");
+                  //todo: fix going back. can't go back once reached this point.
+                    if (command.equalsIgnoreCase("back")){
+                    try{while (!BackPath.isEmpty()){
+                    visitedLoc = BackPath.pop();
+                    System.out.println(visitedLoc.getName());    
+                    }
+                   } catch (Exception ex) {
+            System.out.println("Caught exception: " + ex.getMessage());
+                    } 
+                    System.out.println();
+                  }
+                         else if(command.equalsIgnoreCase("forth")){
+                   try{while (!FrontPath.isEmpty()){
+                    visitedLoc = FrontPath.dequeue();
+                    System.out.println(visitedLoc.getName());    
+                    }
+                   }  catch (Exception ex) {
+            System.out.println("Caught exception: " + ex.getMessage());
+                    }
+                    System.out.println();
+                  }
+                         else if (command.equalsIgnoreCase("quit")){
+                             quit();
+                         }
+                  }
+                  else{
+                  System.out.println("Unfortunately, you haven't completed this game yet, so this is the mundane ending.");
+                  System.out.println("Next time, find fossils, save your score, and bring the Homunculus Flask with you from the Shoppe.");
+                  System.out.println("Then, you'll be able to replay your adventure.");
+                  quit();
+                  }
                } 
     }
 
@@ -408,29 +442,7 @@ public class Fossilized {
              System.out.println("There's no fossil here.");
              }    
         }
-         //todo: fix going back. can't go back once reached this point.
-         else if (command.equalsIgnoreCase("back") && (currentLocale == 8)){
-                    try{while (!BackPath.isEmpty()){
-                    visitedLoc = BackPath.pop();
-                    System.out.println(visitedLoc.getName());    
-                    }
-                   } catch (Exception ex) {
-            System.out.println("Caught exception: " + ex.getMessage());
-                    } 
-                    System.out.println();
-                  }
-          else if(command.equalsIgnoreCase("forth") && (currentLocale == 8)){
-                   try{while (!FrontPath.isEmpty()){
-                    visitedLoc = FrontPath.dequeue();
-                    System.out.println(visitedLoc.getName());    
-                    }
-                   }  catch (Exception ex) {
-            System.out.println("Caught exception: " + ex.getMessage());
-                    }
-                    System.out.println();
-                  } 
          
-        
          
         else{
            System.out.println("You have typed an illegal command. Type 'h' or 'help' for a list of commands.");  
