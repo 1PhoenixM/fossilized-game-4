@@ -236,28 +236,31 @@ public class Fossilized {
      else if(currentLocale == 8){
                   if(items[7].getObtained()){
                   System.out.println("Type back or forth to see your adventure, or quit to end the game.");
-                  //todo: fix going back. can't go back once reached this point.
                     if (command.equalsIgnoreCase("back")){
                     try{while (!BackPath.isEmpty()){
                     visitedLoc = BackPath.pop();
-                    System.out.println(visitedLoc.getName());    
+                    System.out.println(visitedLoc.getName());
                     }
                    } catch (Exception ex) {
             System.out.println("Caught exception: " + ex.getMessage());
-                    } 
+                    }
                     System.out.println();
+                    System.out.println("A winner is you! (sic)");
+                    quit();
                   }
-                         else if(command.equalsIgnoreCase("forth")){
+                   else if(command.equalsIgnoreCase("forth")){
                    try{while (!FrontPath.isEmpty()){
                     visitedLoc = FrontPath.dequeue();
-                    System.out.println(visitedLoc.getName());    
+                    System.out.println(visitedLoc.getName());
                     }
                    }  catch (Exception ex) {
             System.out.println("Caught exception: " + ex.getMessage());
                     }
                     System.out.println();
+                    System.out.println("A winner is you! (sic)");
+                    quit();
                   }
-                         else if (command.equalsIgnoreCase("quit")){
+                   else if (command.equalsIgnoreCase("quit")){
                              quit();
                          }
                   }
